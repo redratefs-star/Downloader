@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ambil - Downloader Video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <h1>Ambil</h1>
+  <p class="sub">Tempel link video, dapat file-nya.</p>
+
+  <div class="box">
+    <input id="url" type="url" placeholder="https://www.tiktok.com/@akun/video/..." autocomplete="off">
+    <div class="row">
+      <button id="paste" class="ghost" type="button">Tempel</button>
+      <button id="go" type="button">Ambil</button>
+    </div>
+  </div>
+
+  <div id="msg" role="status"></div>
+  <section id="result" hidden></section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
