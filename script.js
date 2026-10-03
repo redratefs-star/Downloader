@@ -21,23 +21,20 @@ go.onclick = async () => {
   go.disabled = false;
 };
 
-function esc(s) { const p = document.createElement('p'); p.textContent = s || ''; return p.innerHTML; }
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
 
 function show(d) {
   let html = '';
   if (d.type === 'photo') {
-    html += '<p class="warn">Link ini berisi foto, bukan video. Yang bisa diunduh: foto (' + d.images.length + ') dan audio.</p>';
-    html += '<div class="grid">' + d.images.map((u, i) =>
-      '<a href="' + u + '" target="_blank" rel="noopener" aria-label="Foto ' + (i + 1) + '"><img src="' + u + '" alt="Foto ' + (i + 1) + '"></a>').join('') + '</div>';
+    html += '<p class="warn">Link ini berisi foto, bukan video.</p>';
+    if (d.previews && d.previews.length) html += '<div class="grid">' + d.previews.map((u, i) => '<img src="' + esc(u) + '" alt="Foto ' + (i + 1) + '">').join('') + '</div>';
   } else if (d.cover) {
-    html += '<img class="cover" src="' + d.cover + '" alt="Preview">';
+    html += '<img class="cover" src="' + esc(d.cover) + '" alt="Preview">';
   }
-  html += '<p class="title">' + esc(d.title || 'Tanpa judul') + '</p><p class="by">' + esc(d.author) + ' - ' + esc(d.platform) + '</p>';
-  html += '<div class="btns">';
-  if (d.type === 'photo') d.images.forEach((u, i) => html += '<a class="dl" href="' + u + '" target="_blank" rel="noopener">Unduh foto ' + (i + 1) + '</a>');
-  if (d.videoHd) html += '<a class="dl" href="' + d.videoHd + '" target="_blank" rel="noopener">Unduh video HD</a>';
-  if (d.video) html += '<a class="dl" href="' + d.video + '" target="_blank" rel="noopener">Unduh video</a>';
-  if (d.audio) html += '<a class="dl" href="' + d.audio + '" target="_blank" rel="noopener">Unduh audio MP3</a>';
-  html += '</div><p class="by" style="margin-top:12px">Kalau file cuma terbuka di tab baru, tahan lama lalu pilih Simpan.</p>';
+  html += '<p class="title">' + esc(d.title || 'Tanpa judul') + '</p><p class="by">' + esc(d.author ? d.author + ' - ' : '') + esc(d.platform) + '</p>';
+  html += '<div class="btns">' + d.items.map((it) => {
+    const href = it.direct ? it.url : '/api/file?u=' + encodeURIComponent(it.url) + '&name=' + encodeURIComponent(it.filename);
+    return '<a class="dl" href="' + esc(href) + '" download="' + esc(it.filename) + '">' + esc(it.label) + '</a>';
+  }).join('') + '</div>';
   result.innerHTML = html; result.hidden = false;
 }
